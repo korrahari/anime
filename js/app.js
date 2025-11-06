@@ -452,108 +452,16 @@
     });
   }
 
-  // Modal logic
-  const modal = document.getElementById('modal');
-  const modalTitle = document.getElementById('modal-title');
-  const modalGenres = document.getElementById('modal-genres');
-  const modalStats = document.getElementById('modal-stats');
-  const modalDesc = document.getElementById('modal-desc');
-  const modalVideo = document.getElementById('modal-video');
-  const modalClose = document.getElementById('modal-close');
-  const modalFavBtn = document.getElementById('modal-fav');
-  const modalDismiss = document.getElementById('modal-dismiss');
-
-  function openModal(item){
-    if(!modal) return;
-    // store previously focused element to return focus later
-    lastFocused = document.activeElement;
-    // image column removed: modal will show meta and video only
-    modalTitle.textContent = item.title;
-    modalGenres.textContent = `Genres: ${item.genres.join(', ')}`;
-    modalStats.textContent = `${item.type} • Episodes: ${item.episodes} • Views: ${item.views} • Favorites: ${item.favorites} • Status: ${item.status} • Latest ep: ${item.latest_ep}`;
-    modalDesc.textContent = item.description || '';
-    // video handling
-    if(modalVideo){
-      if(item.video){
-        modalVideo.src = item.video;
-        modalVideo.style.display = '';
-      } else {
-        modalVideo.pause && modalVideo.pause();
-        modalVideo.src = '';
-        modalVideo.style.display = 'none';
-      }
-    }
-    // modal favorite button state
-    if(modalFavBtn){
-      modalFavBtn.dataset.id = item.id;
-      modalFavBtn.classList.toggle('active', isFav(item.id));
-      modalFavBtn.textContent = isFav(item.id) ? '❤' : '♡';
-    }
-    // push history state for shareable URL
-    try{
-      const cur = new URL(window.location.href);
-      const param = `anime=${encodeURIComponent(item.id)}`;
-      // only push if URL doesn't already have this param
-      if(!cur.searchParams.get('anime') || cur.searchParams.get('anime') !== String(item.id)){
-        history.pushState({animeId: item.id}, '', `?anime=${encodeURIComponent(item.id)}`);
-      } else {
-        // ensure history state reflects current
-        history.replaceState({animeId: item.id}, '', cur.href);
-      }
-    }catch(e){/* ignore history errors */}
-
-    modal.classList.remove('hidden');
-    modal.setAttribute('aria-hidden','false');
-    // focus the close button for accessibility
-    setTimeout(()=>{ if(modalClose) modalClose.focus(); }, 10);
-    // attach focus trap
-    document.addEventListener('keydown', trapFocus);
-  }
-
-  function closeModal(){
-    if(!modal) return;
-    modal.classList.add('hidden');
-    modal.setAttribute('aria-hidden','true');
-    // restore focus
-    if(lastFocused && lastFocused.focus) lastFocused.focus();
-    // remove focus trap listener
-    document.removeEventListener('keydown', trapFocus);
-  }
-
-  if(modalClose) modalClose.addEventListener('click', closeModal);
-  if(modalDismiss) modalDismiss.addEventListener('click', closeModal);
-  if(modal) modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
-
-  // modal favorite toggle
-  if(modalFavBtn){
-    modalFavBtn.addEventListener('click', ()=>{
-      const id = modalFavBtn.dataset.id;
-      toggleFav(id);
-      modalFavBtn.classList.toggle('active', isFav(id));
-      modalFavBtn.textContent = isFav(id) ? '❤' : '♡';
-      // update cards list and top10
-      renderLatestEpisodes();
-      renderTop10();
-      renderFavoritesPanel();
-    });
-  }
-
-  // focus trap inside modal: keep Tab inside modal
+  // Modal removed: provide no-op stubs so calls to openModal/closeModal don't throw
+  // Details view intentionally disabled to avoid blocking overlay on small screens.
   let lastFocused = null;
-  function trapFocus(e){
-    if(!modal || modal.classList.contains('hidden')) return;
-    if(e.key !== 'Tab') return;
-    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-    if(!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length -1];
-    if(e.shiftKey){
-      if(document.activeElement === first){ e.preventDefault(); last.focus(); }
-    } else {
-      if(document.activeElement === last){ e.preventDefault(); first.focus(); }
-    }
+  function openModal(item){
+    // Modal has been removed. Keep this function as a no-op to avoid errors from callers.
+    console.info('openModal called but modal has been removed. Item:', item && item.title ? item.title : item);
+    // Optionally, you could route to a details page or show an unobtrusive panel here.
   }
+  function closeModal(){ /* no-op; modal removed */ }
+  function trapFocus(e){ /* no-op; modal removed */ }
 
   // global image error handler: replace broken images with a 1x1 transparent GIF fallback
   // prevents visible broken/alt boxes and avoids infinite onerror loops

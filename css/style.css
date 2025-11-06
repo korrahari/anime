@@ -91,26 +91,11 @@ html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Seg
   .section-grid{grid-template-columns:1fr}
 }
 
-/* Modal styles */
+/* Modal UI removed to prevent cover/overlay — keep a hidden utility class for other uses */
 .hidden{display:none}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:1200;padding:20px}
-.modal-content{background:var(--panel);padding:18px;border-radius:12px;max-width:900px;width:100%;color:#fff}
-.modal-content{position:relative;background:var(--panel);padding:18px;border-radius:12px;max-width:900px;width:100%;color:#fff}
-.modal-close{position:absolute;right:18px;top:14px;background:rgba(0,0,0,0.28);border:none;color:#fff;font-size:20px;cursor:pointer;padding:6px 8px;border-radius:8px;z-index:1300}
-.modal-close:hover{background:rgba(255,255,255,0.06);transform:scale(1.03)}
 
-/* inline dismiss button inside modal meta */
-.modal-dismiss{margin-left:8px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;cursor:pointer;font-size:13px}
-.modal-dismiss:hover{background:rgba(255,255,255,0.04);transform:scale(1.02)}
-.modal-body{display:block;padding:8px 0}
-.modal-meta{flex:1}
-.modal-meta h2{margin:0 0 8px 0}
-.modal-meta .sub{color:var(--muted);font-size:14px}
-
-@media(max-width:700px){
-  .modal-body{padding:6px 0}
-  .modal-close{right:12px;top:10px}
-}
+/* NOTE: modal styles intentionally stripped. If you later re-enable a details view,
+   restore appropriate dialog markup and styles here. */
 
 /* Favorite button styles */
 .card{position:relative}
