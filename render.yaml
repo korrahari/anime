@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: myworld-anime
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: ADMIN_TOKEN
+        sync: false

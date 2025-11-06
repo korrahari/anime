@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600" viewBox="0 0 400 600">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#6b4b8a" />
+      <stop offset="1" stop-color="#2b2240" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g)" />
+  <text x="50%" y="48%" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="28" text-anchor="middle">My World</text>
+  <text x="50%" y="54%" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle">Cover Placeholder</text>
+</svg>

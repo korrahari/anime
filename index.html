@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My World — Anime Catalog</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">My World</div>
+      <div class="search-wrap">
+        <input id="search" placeholder="Search anime..." />
+        <button id="clearSearch" title="Clear">✕</button>
+      </div>
+      <div class="controls">
+        <select id="sort">
+          <option value="popular">Sort: Popular</option>
+          <option value="alpha">Sort: A → Z</option>
+          <option value="latest">Sort: Latest</option>
+        </select>
+        <button id="filter-favorites" title="Show favorites only">♡ Favorites</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="left">
+        <div class="section-grid" id="sections">
+          <!-- JS will populate sections like Top Airing / Most Popular / Most Favorite / Latest Completed -->
+        </div>
+
+        <h2 class="section-title">Latest Episode</h2>
+        <div id="latest-episodes" class="card-grid"></div>
+      </section>
+
+      <aside class="right">
+        <div class="panel">
+          <h3>Genres</h3>
+          <div id="genres" class="genres"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Top 10</h3>
+          <ol id="top10" class="top10"></ol>
+        </div>
+      
+        <div class="panel" id="favorites-panel">
+          <h3>Favorites</h3>
+          <div id="favorites-list" class="favorites-list">
+            <div class="muted">No favorites yet — click a heart to add.</div>
+          </div>
+        </div>
+
+        <div class="panel" id="admin-panel">
+          <h3>Admin — Add Anime</h3>
+          <form id="admin-form">
+            <input type="hidden" id="a-edit-id" />
+            <label>Title<br/><input id="a-title" required placeholder="Anime title" /></label>
+            <label>Image URL (advanced)<br/><input id="a-image" placeholder="https://... or leave blank for placeholder" /></label>
+            <label>Or choose local asset<br/>
+              <select id="a-asset">
+                <option value="">(loading assets...)</option>
+              </select>
+            </label>
+            <label>Type<br/><input id="a-type" placeholder="TV / Movie / OVA" /></label>
+            <label>Episodes<br/><input id="a-episodes" placeholder="e.g. 12, 24, 1" /></label>
+            <label>Genres (comma separated)<br/><input id="a-genres" placeholder="Action, Adventure" /></label>
+            <label>Status<br/><input id="a-status" placeholder="Airing / Completed" /></label>
+            <label>Latest Episode<br/><input id="a-latest" placeholder="e.g. 1, 12" /></label>
+            <label>Views<br/><input id="a-views" type="number" min="0" placeholder="0" /></label>
+            <label>Favorites count<br/><input id="a-favorites" type="number" min="0" placeholder="0" /></label>
+            <label>Description<br/><textarea id="a-desc" rows="3" placeholder="Short description (optional)"></textarea></label>
+            <label>Watch URL (YouTube or direct video URL)<br/><input id="a-video" placeholder="https://... (optional)" /></label>
+            <label>Or upload video file<br/><input id="video-input" type="file" accept="video/*" /></label>
+            <label>Admin token (server auth) — paste your ADMIN_TOKEN here<br/><input id="admin-token" placeholder="optional: admin token for server" /></label>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button type="submit" id="admin-submit">Add Anime</button>
+              <button type="button" id="admin-reset">Reset</button>
+            </div>
+          </form>
+          <hr style="margin:12px 0"/>
+          <h4>Custom entries</h4>
+          <div id="admin-list" class="admin-list">
+            <div class="muted">No custom entries yet. Use the form above to add.</div>
+          </div>
+          <hr style="margin:12px 0"/>
+          <h4>Export / Import</h4>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button id="export-json">Export JSON</button>
+            <button id="import-json-btn">Import JSON</button>
+            <input id="import-json" type="file" accept="application/json" style="display:none" />
+          </div>
+
+          <hr style="margin:12px 0"/>
+          <h4>Upload local assets</h4>
+          <div id="drop-zone" class="drop-zone">Drop images here or click to select</div>
+          <input id="drop-input" type="file" accept="image/*" style="display:none" multiple />
+          <hr style="margin:12px 0"/>
+          <h4>Manage Uploaded Assets</h4>
+          <div id="asset-manager" class="asset-manager">
+            <div class="muted">No uploaded assets yet.</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">Built with ❤️ — My World</footer>
+
+    <!-- Embedded sample data so this works without a server -->
+    <script id="anime-data" type="application/json">
+    [
+  {"id":1,"title":"One Piece","image":"assets/onepiece.svg","type":"TV","episodes":"1000+","genres":["Action","Adventure"],"views":1147,"favorites":1133,"status":"Airing","latest_ep":"1000"},
+  {"id":2,"title":"Naruto: Shippuden","image":"assets/naruto.svg","type":"TV","episodes":"500","genres":["Action","Ninja"],"views":500,"favorites":500,"status":"Completed","latest_ep":"500"},
+      {"id":3,"title":"Demon Slayer: Kimetsu no Yaiba","image":"https://via.placeholder.com/200x300?text=Demon+Slayer","type":"TV","episodes":"26","genres":["Action","Demons"],"views":1200,"favorites":800,"status":"Airing","latest_ep":"26"},
+      {"id":4,"title":"Chainsaw Man","image":"https://via.placeholder.com/200x300?text=Chainsaw+Man","type":"TV","episodes":"12","genres":["Action","Horror"],"views":900,"favorites":740,"status":"Finished","latest_ep":"12"},
+      {"id":5,"title":"Jujutsu Kaisen","image":"https://via.placeholder.com/200x300?text=Jujutsu+Kaisen","type":"TV","episodes":"24","genres":["Action","Supernatural"],"views":600,"favorites":620,"status":"Finished","latest_ep":"24"},
+      {"id":6,"title":"Bleach","image":"https://via.placeholder.com/200x300?text=Bleach","type":"TV","episodes":"366","genres":["Action","Shounen"],"views":366,"favorites":300,"status":"Completed","latest_ep":"366"},
+      {"id":7,"title":"Black Clover","image":"https://via.placeholder.com/200x300?text=Black+Clover","type":"TV","episodes":"170","genres":["Fantasy","Magic"],"views":170,"favorites":170,"status":"Completed","latest_ep":"170"},
+      {"id":8,"title":"Solo Leveling","image":"https://via.placeholder.com/200x300?text=Solo+Leveling","type":"TV","episodes":"13","genres":["Action","Fantasy"],"views":130,"favorites":140,"status":"Finished","latest_ep":"13"},
+      {"id":9,"title":"Attack on Titan","image":"https://via.placeholder.com/200x300?text=AoT","type":"TV","episodes":"75","genres":["Action","Drama"],"views":950,"favorites":920,"status":"Completed","latest_ep":"75"},
+      {"id":10,"title":"Gintama","image":"https://via.placeholder.com/200x300?text=Gintama","type":"TV","episodes":"~400","genres":["Comedy","Action"],"views":171,"favorites":180,"status":"Completed","latest_ep":"400"},
+  {"id":11,"title":"My Hero Academia","image":"assets/default.svg","type":"TV","episodes":"<ongoing>","genres":["Action","Superhero"],"views":800,"favorites":750,"status":"Airing","latest_ep":"100"},
+  {"id":12,"title":"Solo Leveling Season 2","image":"assets/default.svg","type":"TV","episodes":"12","genres":["Action","Fantasy"],"views":130,"favorites":140,"status":"Airing","latest_ep":"12"}
+    ]
+    </script>
+
+    <script src="js/app.js"></script>
+    
+    <!-- Modal for details -->
+    <div id="modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button id="modal-close" class="modal-close" aria-label="Close">✕</button>
+        <div class="modal-body">
+              <img id="modal-img" alt="cover" />
+          <div class="modal-meta">
+            <div style="display:flex;align-items:center;gap:10px">
+              <h2 id="modal-title"></h2>
+              <button id="modal-fav" class="fav-btn" title="Toggle favorite">♡</button>
+            </div>
+                <div id="modal-video-wrap" style="margin-top:12px;">
+                  <!-- video element populated by JS when available -->
+                  <video id="modal-video" controls style="width:100%;max-height:420px;display:none"></video>
+                </div>
+            <div id="modal-genres" class="sub"></div>
+            <div id="modal-stats" class="sub"></div>
+            <div id="modal-desc" class="sub" style="margin-top:8px;color:var(--muted)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
