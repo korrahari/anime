@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Watch — My World</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .watch-container{max-width:980px;margin:22px auto;padding:18px}
+      .watch-meta{margin-top:12px;color:var(--muted)}
+      .watch-video{width:100%;height:auto;background:#000;border-radius:8px}
+      .muted-small{color:var(--muted);font-size:13px}
+    </style>
+  </head>
+  <body>
+    <header class="topbar"><div class="brand">My World</div></header>
+    <main class="watch-container">
+      <div id="notfound" class="panel muted" style="display:none">Anime not found.</div>
+      <div id="watch" style="display:none">
+        <h2 id="w-title"></h2>
+        <div id="w-sub" class="muted-small"></div>
+        <div style="margin-top:12px">
+          <video id="w-video" class="watch-video" controls></video>
+        </div>
+        <div id="w-desc" class="watch-meta"></div>
+      </div>
+    </main>
+    <footer class="footer">Built with ❤️ — My World</footer>
+
+    <script>
+    // fetch embedded data from index.html then merge with /api/custom
+    (async function(){
+      function getParam(name){ const p = new URLSearchParams(location.search); return p.get(name); }
+      const aid = getParam('anime');
+      // helper to parse embedded JSON from index.html
+      async function fetchEmbedded(){
+        try{
+          const txt = await fetch('/index.html').then(r=>r.text());
+          const m = txt.match(/<script id="anime-data" type="application\/json">([\s\S]*?)<\/script>/m);
+          if(m && m[1]) return JSON.parse(m[1]);
+        }catch(e){}
+        return [];
+      }
+      const embedded = await fetchEmbedded();
+      let custom = [];
+      try{ custom = await fetch('/api/custom').then(r=>r.ok? r.json() : []); }catch(e){ custom = []; }
+      const list = (embedded || []).concat(custom || []);
+      const item = list.find(x=>String(x.id) === String(aid));
+      if(!item){ document.getElementById('notfound').style.display='block'; return; }
+      document.getElementById('watch').style.display='block';
+      document.getElementById('w-title').textContent = item.title || 'Untitled';
+      document.getElementById('w-sub').textContent = `${item.type || ''} • ${item.episodes || ''} • ${ (item.genres||[]).join(', ') }`;
+      document.getElementById('w-desc').textContent = item.description || '';
+      const vid = document.getElementById('w-video');
+      if(item.video){
+        vid.src = item.video;
+        // ensure video is visible
+        vid.style.display = '';
+      } else {
+        // if image or other media, show a placeholder message
+        vid.style.display = 'none';
+        const p = document.createElement('div'); p.className='panel muted-small'; p.textContent = 'No watch URL available for this entry.'; document.getElementById('w-desc').appendChild(p);
+      }
+    })();
+    </script>
+  </body>
+</html>

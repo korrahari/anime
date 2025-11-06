@@ -419,13 +419,16 @@
       // click opens modal
       node.addEventListener('click', (e)=>{
         if(e.target.closest('.fav-btn')) return;
-        openModal(list[idx]);
+        // navigate to watch page for video playback
+        const id = list[idx] && list[idx].id;
+        if(id) window.location.href = `watch.html?anime=${encodeURIComponent(id)}`;
       });
       // keyboard: Enter or Space opens modal
       node.addEventListener('keydown', (e)=>{
         if(e.key === 'Enter' || e.key === ' '){
           e.preventDefault();
-          openModal(list[idx]);
+          const id = list[idx] && list[idx].id;
+          if(id) window.location.href = `watch.html?anime=${encodeURIComponent(id)}`;
         }
       });
     });
@@ -529,8 +532,7 @@
 
     $$('.fav-open', el).forEach(b=>b.addEventListener('click', (e)=>{
       const id = Number(b.dataset.id);
-      const item = anime.find(a=>a.id === id);
-      if(item) openModal(item);
+      if(id) window.location.href = `watch.html?anime=${encodeURIComponent(id)}`;
     }));
     $$('.fav-remove', el).forEach(b=>b.addEventListener('click', (e)=>{
       const id = Number(b.dataset.id);
@@ -749,7 +751,8 @@
             loadCustom();
           }
           renderSections(); renderGenres(); renderTop10(); renderLatestEpisodes(); renderFavoritesPanel(); renderAdminList();
-          openModal(updated);
+          // navigate to watch page for the updated item
+          if(updated && updated.id) window.location.href = `watch.html?anime=${encodeURIComponent(updated.id)}`;
           $('#a-edit-id').value = '';
           const sub = $('#admin-submit'); if(sub) sub.textContent = 'Add Anime';
           adminForm.reset();
@@ -761,11 +764,11 @@
             const cur = getCustomFromStorage(); cur.push(serverItem); saveCustom(cur);
             loadCustom();
             renderSections(); renderGenres(); renderTop10(); renderLatestEpisodes(); renderFavoritesPanel(); renderAdminList();
-            openModal(serverItem);
+            if(serverItem && serverItem.id) window.location.href = `watch.html?anime=${encodeURIComponent(serverItem.id)}`;
           }catch(err){
             // server not available — fallback to local
             const added = addNewAnimeEntry(data);
-            openModal(added);
+            if(added && added.id) window.location.href = `watch.html?anime=${encodeURIComponent(added.id)}`;
           }
           adminForm.reset();
         }
@@ -854,9 +857,8 @@
       if(aid){
         const item = anime.find(a=>String(a.id) === String(aid));
         if(item){
-          // replace state so popstate works predictably
-          history.replaceState({animeId: item.id}, '', `?anime=${encodeURIComponent(item.id)}`);
-          openModal(item);
+          // redirect to watch page for playback
+          window.location.href = `watch.html?anime=${encodeURIComponent(item.id)}`;
         }
       }
     }catch(e){/* ignore URL parse errors */}
