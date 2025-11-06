@@ -454,7 +454,6 @@
 
   // Modal logic
   const modal = document.getElementById('modal');
-  const modalImg = document.getElementById('modal-img');
   const modalTitle = document.getElementById('modal-title');
   const modalGenres = document.getElementById('modal-genres');
   const modalStats = document.getElementById('modal-stats');
@@ -468,20 +467,7 @@
     if(!modal) return;
     // store previously focused element to return focus later
     lastFocused = document.activeElement;
-    // handle image: hide if missing or fails to load to avoid showing alt text box
-    if(modalImg){
-      modalImg.onerror = function(){ this.style.display = 'none'; };
-      modalImg.onload = function(){ this.style.display = ''; };
-      if(item.image && String(item.image).trim()){
-        modalImg.style.display = '';
-        modalImg.src = item.image;
-        modalImg.alt = item.title || 'cover';
-      } else {
-        modalImg.style.display = 'none';
-        modalImg.src = '';
-        modalImg.alt = '';
-      }
-    }
+    // image column removed: modal will show meta and video only
     modalTitle.textContent = item.title;
     modalGenres.textContent = `Genres: ${item.genres.join(', ')}`;
     modalStats.textContent = `${item.type} • Episodes: ${item.episodes} • Views: ${item.views} • Favorites: ${item.favorites} • Status: ${item.status} • Latest ep: ${item.latest_ep}`;
