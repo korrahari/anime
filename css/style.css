@@ -95,16 +95,23 @@ html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Seg
 .hidden{display:none}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:1200;padding:20px}
 .modal-content{background:var(--panel);padding:18px;border-radius:12px;max-width:900px;width:100%;color:#fff}
-.modal-close{position:absolute;right:22px;top:18px;background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer}
+.modal-content{position:relative;background:var(--panel);padding:18px;border-radius:12px;max-width:900px;width:100%;color:#fff}
+.modal-close{position:absolute;right:18px;top:14px;background:rgba(0,0,0,0.28);border:none;color:#fff;font-size:20px;cursor:pointer;padding:6px 8px;border-radius:8px;z-index:1300}
+.modal-close:hover{background:rgba(255,255,255,0.06);transform:scale(1.03)}
+
+/* inline dismiss button inside modal meta */
+.modal-dismiss{margin-left:8px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;cursor:pointer;font-size:13px}
+.modal-dismiss:hover{background:rgba(255,255,255,0.04);transform:scale(1.02)}
 .modal-body{display:flex;gap:18px;align-items:flex-start}
-.modal-body img{width:220px;height:320px;object-fit:cover;border-radius:8px}
+.modal-body img{width:220px;height:320px;object-fit:cover;border-radius:8px;display:none}
 .modal-meta{flex:1}
 .modal-meta h2{margin:0 0 8px 0}
 .modal-meta .sub{color:var(--muted);font-size:14px}
 
 @media(max-width:700px){
   .modal-body{flex-direction:column;align-items:center}
-  .modal-body img{width:60%;height:auto}
+  /* hide cover image in modal to avoid showing alt/placeholder box */
+  .modal-body img{display:none}
   .modal-close{right:12px;top:10px}
 }
 

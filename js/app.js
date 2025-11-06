@@ -462,6 +462,7 @@
   const modalVideo = document.getElementById('modal-video');
   const modalClose = document.getElementById('modal-close');
   const modalFavBtn = document.getElementById('modal-fav');
+  const modalDismiss = document.getElementById('modal-dismiss');
 
   function openModal(item){
     if(!modal) return;
@@ -534,6 +535,7 @@
   }
 
   if(modalClose) modalClose.addEventListener('click', closeModal);
+  if(modalDismiss) modalDismiss.addEventListener('click', closeModal);
   if(modal) modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
 
@@ -566,6 +568,23 @@
       if(document.activeElement === last){ e.preventDefault(); first.focus(); }
     }
   }
+
+  // global image error handler: replace broken images with a 1x1 transparent GIF fallback
+  // prevents visible broken/alt boxes and avoids infinite onerror loops
+  const TRANSPARENT_1PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  document.addEventListener('error', (e)=>{
+    try{
+      const t = e.target;
+      if(t && t.tagName === 'IMG'){
+        // if already using fallback, remove the element to be safe
+        if(t.src === TRANSPARENT_1PX){ t.remove(); return; }
+        t.onerror = null; // prevent loop
+        t.src = TRANSPARENT_1PX;
+        t.alt = '';
+        t.style.opacity = '0.01';
+      }
+    }catch(_){ }
+  }, true);
 
   function renderGenres(){
     const el = $('#genres');

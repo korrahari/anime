@@ -97,6 +97,12 @@ app.delete('/api/custom/:id', checkAuth, (req, res) => {
   }catch(e){ res.status(500).json({ error: 'delete error' }); }
 });
 
+// lightweight health-check endpoints
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime(), now: Date.now(), node: process.version });
+});
+app.get('/healthz', (req, res) => res.redirect('/health'));
+
 // serve uploads
 app.use('/uploads', express.static(uploadsDir));
 
