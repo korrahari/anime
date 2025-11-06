@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>All Episodes — My World</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .episodes-wrap{max-width:1100px;margin:18px auto;padding:18px}
+      .anime-row{background:var(--panel);padding:12px;border-radius:8px;margin-bottom:12px}
+      .anime-title{display:flex;align-items:center;gap:10px;cursor:pointer}
+      .episode-list{display:none;margin-top:10px;flex-wrap:wrap;gap:8px}
+      .episode-list a{padding:6px 8px;background:var(--card);border-radius:8px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,0.02)}
+      .show-more{margin-top:8px;color:var(--muted);cursor:pointer}
+    </style>
+  </head>
+  <body>
+    <header class="topbar"><div class="brand">My World</div></header>
+    <main class="episodes-wrap">
+      <h2 style="color:var(--accent)">All Anime — Episodes</h2>
+      <div id="list">Loading…</div>
+    </main>
+    <footer class="footer">Built with ❤️ — My World</footer>
+
+    <script>
+    (async function(){
+      // fetch embedded data from index.html
+      async function fetchEmbedded(){
+        try{
+          const txt = await fetch('/index.html').then(r=>r.text());
+          const m = txt.match(/<script id="anime-data" type="application\/json">([\s\S]*?)<\/script>/m);
+          if(m && m[1]) return JSON.parse(m[1]);
+        }catch(e){}
+        return [];
+      }
+      const embedded = await fetchEmbedded();
+      let custom = [];
+      try{ custom = await fetch('/api/custom').then(r=>r.ok? r.json() : []); }catch(e){ custom = []; }
+      const list = (embedded || []).concat(custom || []);
+      const wrap = document.getElementById('list');
+      if(!list || list.length===0){ wrap.innerHTML = '<div class="muted">No anime found.</div>'; return; }
+
+      function parseCount(epStr){
+        if(!epStr) return null;
+        const m = String(epStr).match(/(\d{1,4})/);
+        if(!m) return null;
+        return Number(m[1]);
+      }
+
+      const LIMIT = 50; // max episodes to show per anime before truncation
+
+      wrap.innerHTML = list.map(a=>{
+        const count = parseCount(a.episodes || a.latest_ep || '');
+        const id = a.id;
+        const safeTitle = (a.title||'Untitled').replace(/</g,'&lt;');
+        return `
+          <div class="anime-row">
+            <div class="anime-title" data-id="${id}">
+              <strong>${safeTitle}</strong>
+              <div style="margin-left:8px;color:var(--muted);font-size:13px">${a.episodes||a.latest_ep||''} • ${ (a.genres||[]).slice(0,3).join(', ')}</div>
+            </div>
+            <div class="episode-list" data-id="${id}" data-count="${count||''}"></div>
+          </div>
+        `;
+      }).join('');
+
+      // attach toggle handlers and populate episodes
+      document.querySelectorAll('.anime-title').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          const id = el.dataset.id || el.getAttribute('data-id');
+          const listEl = document.querySelector(`.episode-list[data-id="${id}"]`);
+          if(!listEl) return;
+          if(listEl.style.display === 'block'){ listEl.style.display='none'; return; }
+          // populate if empty
+          if(!listEl.dataset.populated){
+            const count = Number(listEl.getAttribute('data-count')) || null;
+            if(!count){ listEl.innerHTML = '<div class="muted-small">Episodes: N/A</div>'; }
+            else {
+              const showCount = Math.min(count, LIMIT);
+              const items = [];
+              for(let i=1;i<=showCount;i++) items.push(`<a href="/watch.html?anime=${encodeURIComponent(id)}&ep=${i}">Episode ${i}</a>`);
+              if(count > LIMIT) items.push(`<div class="show-more">Showing ${LIMIT} of ${count} — expand in admin or check individual entry</div>`);
+              listEl.innerHTML = items.join(' ');
+            }
+            listEl.dataset.populated = '1';
+          }
+          listEl.style.display = 'block';
+        });
+      });
+
+    })();
+    </script>
+  </body>
+</html>

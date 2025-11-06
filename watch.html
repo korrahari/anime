@@ -31,7 +31,8 @@
     // fetch embedded data from index.html then merge with /api/custom
     (async function(){
       function getParam(name){ const p = new URLSearchParams(location.search); return p.get(name); }
-      const aid = getParam('anime');
+  const aid = getParam('anime');
+  const ep = getParam('ep');
       // helper to parse embedded JSON from index.html
       async function fetchEmbedded(){
         try{
@@ -50,6 +51,10 @@
       document.getElementById('watch').style.display='block';
       document.getElementById('w-title').textContent = item.title || 'Untitled';
       document.getElementById('w-sub').textContent = `${item.type || ''} • ${item.episodes || ''} • ${ (item.genres||[]).join(', ') }`;
+      if(ep){
+        const epLabel = document.createElement('div'); epLabel.className='muted-small'; epLabel.style.marginTop='6px'; epLabel.textContent = `Episode ${ep}`;
+        document.getElementById('w-sub').appendChild(epLabel);
+      }
       document.getElementById('w-desc').textContent = item.description || '';
       const vid = document.getElementById('w-video');
       if(item.video){
